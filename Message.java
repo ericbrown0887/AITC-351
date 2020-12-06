@@ -1,4 +1,4 @@
-package assignment2;
+package assignment3;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -7,12 +7,12 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
 /**
- * Assignment 4 - Pair Programming Project
- *
- * @author Faiyaz Mirza
+ * 
  * @author Eric Brown
- * @since 2020-11-05
- * This class contains declared variables and demonstrates Encapsulation and Setters with business rules for class Message
+ * @since 2020-09-15
+ * @version 1.0
+ * 
+ * This class contains declared variables and demonstrates Encapsulation and setters with business rules.
  */
 public class Message {
 

@@ -1,6 +1,4 @@
-package assignment2;
-
-import assignment2.Message;
+package assignment3;
 
 public class Chat extends Message {
 
