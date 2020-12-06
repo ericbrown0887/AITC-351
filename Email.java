@@ -1,19 +1,31 @@
-package assignment1;
+package assignment2;
 
 public class Email extends Message {
-	
 	/**
-	 * Default constructor that sets all the Strings to {@value #NOT_AVAILABLE}.
+	 * Static polymorphism with default constructor that sets all the Strings to default values.
 	 */
 	public Email() {
-		senderEmail = Message.NOT_AVAILABLE;
-		recipEmail = Message.NOT_AVAILABLE;
+		this(Email.DEFAULT_SENDER_EMAIL, Email.DEFAULT_RECIP_EMAIL);
+	
 	}
 	
-	public static final String NOT_AVAILALBLE = "---";
-	
-	private String senderEmail;
-	private String recipEmail;
+	/**
+	 * Constructor with all string arguemnts
+	 * @param senderEmail
+	 * @param recipEmail
+	 */
+	public Email(String senderEmail, String recipEmail)  {
+		setSenderEmail(senderEmail);
+		setRecipEmail(recipEmail);
+	}
+	/**
+	 * Constants to represent unknown values for null or invalid inputs
+	 */
+	private static final String DEFAULT_SENDER_EMAIL = "---";
+	private static final String DEFAULT_RECIP_EMAIL = "---";
+
+	public String senderEmail;
+	public String recipEmail;
 	
 	/**
 	 * A method that returns the Sender email
@@ -23,7 +35,6 @@ public class Email extends Message {
 	public String getSenderEmail() {
 		return senderEmail;
 	}
-	
 	/**
 	 * A method that set the value of the variable 'senderEmail' and checks for business rules.
 	 * 
@@ -71,6 +82,15 @@ public class Email extends Message {
 		this.recipEmail = recipEmail;
 	}
 	
+	/**
+	 * Method to return all user input as string
+	 */
+	public String toString() {
+		String toReturn = super.toString();
+		toReturn += "\nSender's email address: " + senderEmail;
+		toReturn += "\nRecipient's email address: " + recipEmail;
+		return toReturn;
+	}
 	
 
 }

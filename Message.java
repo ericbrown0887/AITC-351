@@ -1,27 +1,52 @@
-package assignment1;
+package assignment2;
+
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 
 /**
- * 
+ * Assignment 4 - Pair Programming Project
+ *
+ * @author Faiyaz Mirza
  * @author Eric Brown
- * @since 2020-09-15
- * @version 1.0
- * 
- * This class contains declared variables and demonstrates Encapsulation and setters with business rules.
+ * @since 2020-11-05
+ * This class contains declared variables and demonstrates Encapsulation and Setters with business rules for class Message
  */
 public class Message {
+
 	/**
-	 * Default constructor that sets all the Strings to {@value #NOT_AVAILABLE}.
+	 * Static polymorphism with default constructor that sets all the Strings to default values.
 	 */
 	public Message() {
-		sender = Message.NOT_AVAILABLE;
-		recip = Message.NOT_AVAILABLE;
-		content = Message.NOT_AVAILABLE;
-		date = Message.NOT_AVAILABLE;
-		time = Message.NOT_AVAILABLE;
-		
+		this(Message.DEFAULT_SENDER, Message.DEFAULT_RECIP, Message.DEFAULT_CONTENT, Message.DEFAULT_DATE, Message.DEFAULT_TIME);
 	}
-	
+	/**
+	 * Constructor with all string arguments
+	 * @param sender
+	 * @param recip
+	 * @param content
+	 * @param date
+	 * @param time
+	 */
+	public Message(String sender, String recip, String content, String date, String time) {
+		setSender(sender);
+		setRecip(recip);
+		setContent(content);
+		setDate(date);
+		setTime(time);
+	}
+	/**
+	 * Constants to represent unknown values for null or invalid inputs
+	 */
+	private static final String DEFAULT_SENDER = "---";
+	private static final String DEFAULT_RECIP = "---";
+	private static final String DEFAULT_CONTENT = "---";
+	private static final String DEFAULT_DATE = "---";
+	private static final String DEFAULT_TIME = "---";
 	public static final String NOT_AVAILABLE = "---";
+	
 	
 	private String sender;
 	private String recip;
@@ -31,7 +56,7 @@ public class Message {
 
 	/**
 	 * A method that returns the name of the Sender
-	 * @return A String containing the name of the Sender. Returns "null" if input is invalid
+	 * @return A String containing the name of the Sender. Returns "---" if input is invalid
 	 * according to business rules.
 	 */
 	public String getSender() {
@@ -65,16 +90,6 @@ public class Message {
 		
 		this.sender = sender;
 		
-//		Pattern p = Pattern.compile("^[-',.\"a-zA-Z0-9 ]{1,40}$"); // Business rule: Accepted input contains no more than 40 char
-//		Matcher m = p.matcher(sender);
-//		if (!m.matches()) { // If sender does NOT match the the regex pattern
-//			return false; // The sender was NOT set
-//			
-//		} else if (sender.contains("  ")) { // If the sender contains more than one consecutive space...
-//			return false; // The sender was not set
-//		}
-//		this.sender = sender;
-//		return true;
 	}
 	/**
 	 * A method that returns the name of the Recipient.
@@ -111,19 +126,8 @@ public class Message {
 				return;
 			
 			this.recip= recip;
-				
-//		Pattern p = Pattern.compile("^[-',.\"a-zA-Z0-9 ]{1,40}$");
-//		Matcher m = p.matcher(recip);
-//		if (!m.matches()) {
-//			return false;
-//			
-//		} else if (recip.contains("  ")) {
-//			return false;
-//		}
-//		this.recip = recip;
-//		return true;
-		
 	}
+	
 	/**
 	 * A method that returns the content of the message.
 	 * @return A String containing the content of the message. Returns "null" if input is invalid
@@ -151,14 +155,6 @@ public class Message {
 			return;
 		
 		this.content = content;
-//		if (content.length() > 500) {
-//		return false;
-//	
-//		}
-//		
-//		this.content = content;
-//		return true;
-			
 	}
 
 	/**
@@ -174,24 +170,31 @@ public class Message {
 	 * @param date A String following the date format of yyyy-MM-dd
 	 * @return A Boolean value that reports whether the attribute was set (true) or not (false).
 	 */
-	public void setDate(String date) {
+	public void setDate(String date) throws DateTimeParseException {
+		
+		// Check if string is null
 		if ( date == null )
 			return;
-		
+	
+		// Remove leading and trailing whitespace
 		date = date.trim();
 		
+		// Regex check if date matches pattern yyyy-MM-dd
 		if ( !date.matches("\\d{4}-\\d{2}-\\d{2}"))
+			return;
+		
+		// Create variable newDate to parse user date input to LocalDate format
+		// create variable localDate to store current local date
+		LocalDate newDate = LocalDate.parse(date);
+		LocalDate localDate = LocalDate.now();
+		
+		// Boolean isAfter to check if user date input is after current local date
+		if ( newDate.isAfter(localDate) )
 			return;
 		
 		this.date = date;
 	}
-//		Pattern p = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
-//		Matcher m = p.matcher(date);
-//		if (!m.matches()) {
-//			return false;
-//		}	
-//		this.date = date;
-//		return true;
+
 	/**
 	 * A method that returns the time.
 	 * @return A String containing the time input by the user. Returns "null" if input is invalid
@@ -206,23 +209,74 @@ public class Message {
 	 * @param time A String following the time format of hh-MM
 	 * @return A Boolean value that reports whether the attribute was set (true) or not (false).
 	 */
-	public void setTime(String time) {
+	public void setTime(String time)  throws DateTimeParseException, NullPointerException {
+		// Check if input is null
 		if ( time == null )
 			return;
 		
+		// Trim leading and trailing whitespace
 		time = time.trim();
 		
+		// Regex validation if time input matches hh:mm
 		if ( !time.matches("\\d{2}:\\d{2}"))
 			return;
 		
+		if (!date.equalsIgnoreCase(NOT_AVAILABLE) ) {
+			// Like above store user date input, store current local date
+			LocalDate newDate = LocalDate.parse(date);
+			LocalDate localDate = LocalDate.now();
+			
+			if (localDate.isEqual(newDate) ) {
+				// Similar to storing date, instead store user time input and local time
+				LocalTime newTime = LocalTime.parse(time);
+				LocalTime localTime = LocalTime.now();
+				
+				LocalDateTime messageDateTime = LocalDateTime.of(newDate, newTime);
+				LocalDateTime currentDateTime = LocalDateTime.of(localDate, localTime);
+				
+				if ( messageDateTime.isAfter(currentDateTime) )
+					return;
+				
+			}
+		}
+			
 		this.time = time;
-//		Pattern p = Pattern.compile("\\d{2}:\\d{2}");
-//		Matcher m = p.matcher(time);
-//		if (!m.matches()) {
-//			return false;
-//		}
-//		this.time = time;
-//		return true;
+	}
+	/**
+	 * A method that calculates the age of the message based on the users date/time input vs the local date/time in minutes.
+	 * @param age A long value that is calculated by comparing the user's datetime input vs the local date/time input in minutes
+	 * @return A Boolean value that reports whether the attribute was set (true) or not (false).
+	 */
+	public long getAge() {
+		if ( date.equalsIgnoreCase(Message.NOT_AVAILABLE) || time.equalsIgnoreCase(Message.NOT_AVAILABLE) )
+			return Long.MAX_VALUE;
+		// Like above store user date input, store current local date
+		LocalDate newDate = LocalDate.parse(date);
+		LocalDate localDate = LocalDate.now();
+		
+		// Similar to storing date, instead store user time input and local time
+		LocalTime newTime = LocalTime.parse(time);
+		LocalTime localTime = LocalTime.now();
+		
+		// Store message datetime in variable messageDateTime, store current datetime in variable currentDateTime
+		LocalDateTime messageDateTime = LocalDateTime.of(newDate, newTime);
+		LocalDateTime currentDateTime = LocalDateTime.of(localDate, localTime);
+		
+		// Use object Duration to calculate the elapsed time between user input datetime and current datetime, calculate to minutes
+		Duration messageAge = Duration.between(messageDateTime, currentDateTime);
+		long messageAgeInMinutes = messageAge.toMinutes();
+		return messageAgeInMinutes;
+	}
+	
+	/**
+	 * Method to return all user input as a string
+	 */
+	public String toString() {
+		String toReturn = "Sender's name: " + sender;
+		toReturn += "\nRecipient's name: " + recip;
+		toReturn += "\nContent: " + content;
+		toReturn += "\nSent on: " + date + " " + time + " (" + getAge() + " minutes old)";
+		return toReturn;
 	}
 
 }
