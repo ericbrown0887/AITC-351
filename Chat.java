@@ -1,93 +1,120 @@
-package assignment2;
+package assignment4;
 
-import assignment2.Message;
-
+/**
+ * 
+ * @author Faiyaz Mirza
+ * @author Eric Brown
+ * * @since 2020-11-05
+ * This class contains declared variables & Setter/Getter for class Chat with business rules.
+ */
 public class Chat extends Message {
-
+	
 	/**
-	 * Static polymorphism with default constructor that sets all the Strings to default values.
+	 * Default constructor Chat() that sets all Strings to default values.
 	 */
 	public Chat() {
-		this(Chat.DEFAULT_SENDER_IP, Chat.DEFAULT_RECIP_IP);
+		this(Message.NOT_AVAILABLE, Message.NOT_AVAILABLE, Message.NOT_AVAILABLE, Message.NOT_AVAILABLE,
+				Message.NOT_AVAILABLE, Chat.DEFAULT_IP_ADDRESS, Chat.DEFAULT_IP_ADDRESS);
 	}
 	
-	public Chat(String senderIP, String recipIP) {
-		setSenderIP(senderIP);
-		setRecipIP(recipIP);
-	}
-	/**
-	 * Constants to represent unknown values for null or invalid inputs
-	 */
-	private static final String DEFAULT_SENDER_IP = "---";
-	private static final String DEFAULT_RECIP_IP = "---";
-	
-	private String senderIP;
-	private String recipIP;
-	
-	/**
-	 * A method that returns the Sender IP
-	 * @return A String containing the IP of the Sender. Returns "---" if input is invalid
-	 * according to business rules.
-	 */
-	public String getSenderIP() {
-		return senderIP;
+	public Chat(String sender, String recipient, String content, String date, String time, String senderIPAddress, String recipientIPAddress) {
+		super(sender, recipient, content, date, time);
+		setSenderIPAddress(senderIPAddress);
+		setRecipientIPAddress(recipientIPAddress);
 	}
 	
 	/**
-	 * A method that set the value of the variable 'senderIP' and checks for business rules.
-	 * 
-	 * @param senderIP A string with user's sender input; checks if input is null and RegEx checking for acceptable IP address input.
-	 * @return A Boolean value that reports whether the attribute was set (true) or not (false)
+	 * Constant to represent unknown value for null or invalid inputs.
 	 */
-	public void setSenderIP(String senderIP) {
-		
-		// Checking if the string is null
-		if ( senderIP == null )
+	public static final String DEFAULT_IP_ADDRESS = "127.0.0.1";
+	
+	private String senderIPAddress;
+	private String recipientIPAddress;
+	
+	/**
+	 * Getter for the sender IP attribute. If the value has not been set, the returned string will contain {@value #DEFAULT_IP_ADDRESS}.
+	 * @return A String with the sender IP.
+	 */
+	public String getSenderIPAddress() {
+		return senderIPAddress;
+	}
+	
+	/**
+	 * Setter for the sender IP attribute.
+	 * @param senderIPAddress A String with sender IP input
+	 * @return a Boolean value that reports whether the attribute was set (true) or not (false)
+	 */
+	public void setSenderIPAddress(String senderIPAddress) {
+		if ( senderIPAddress == null || senderIPAddress.trim().length() == 0 ) // Check if String is null, trim whitespace
 			return;
 		
-		// RegEx check that the input matches a valid IP address
-		if ( !senderIP.matches("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$") )
+		if ( senderIPAddress.trim().equalsIgnoreCase(DEFAULT_IP_ADDRESS) ) {
+			this.senderIPAddress = DEFAULT_IP_ADDRESS;
+			return;
+		}
+		
+		if ( !isValidIPAddress(senderIPAddress) ) // Validate IP address
 			return;
 		
-		this.senderIP = senderIP;
+		this.senderIPAddress = senderIPAddress;
 	}
 	
 	/**
-	 * A method that returns the Recipient IP
-	 * @return A String containing the IP of the recipient. Returns "---" if input is invalid
-	 * according to business rules.
+	 * Getter for the recipient IP attribute. If the value has not been set, the returned string will contain {@value #DEFAULT_IP_ADDRESS}.
+	 * @return A String with the recipient IP.
 	 */
-	public String getRecipIP() {
-		return recipIP;
+	public String getRecipientIPAddress() {
+		return recipientIPAddress;
 	}
 	
 	/**
-	 * A method that set the value of the variable 'recipIP' and checks for business rules.
-	 * 
-	 * @param recipIP A string with user's sender input; checks if input is null and RegEx checking for acceptable IP address input.
-	 * @return A Boolean value that reports whether the attribute was set (true) or not (false)
+	 * Setter for the recipient IP attribute.
+	 * @param recipientIPAddress A String with recipient IP input.
+	 * @return a Boolean value that reports whether the attribute was set (true) or not (false).
 	 */
-	public void setRecipIP(String recipIP) {
-		
-		// Checking if the string is null
-		if ( recipIP == null )
+	public void setRecipientIPAddress(String recipientIPAddress) {
+		if ( recipientIPAddress == null || recipientIPAddress.trim().length() == 0 ) // Check if String is null, trim whitespace
 			return;
 		
-		// RegEx check that the input matches a valid IP address
-		if ( !recipIP.matches("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$") )
+		if ( recipientIPAddress.trim().equalsIgnoreCase(DEFAULT_IP_ADDRESS) ) {
+			this.recipientIPAddress = DEFAULT_IP_ADDRESS;
 			return;
+		}
 		
-		this.recipIP = recipIP;
+		if ( !isValidIPAddress(recipientIPAddress) ) // Validate IP address
+			return;
+			
+		this.recipientIPAddress = recipientIPAddress;
 	}
 	
 	/**
-	 * Method to return all user input as string
+	 * A method to check if the IP address fits a particular format using RegEx and a for loop to check each octect is between 0 - 255.
+	 * @param ipAddress
+	 * @return
+	 */
+	private boolean isValidIPAddress(String ipAddress) {
+		if ( !ipAddress.matches("^\\d+\\.\\d+\\.\\d+\\.\\d+$") ) // Regex check that the input matches a valid IP address format.
+			return false;
+		
+		String[] addressParts = ipAddress.split("\\."); // Split each IP address into separate parts for octet range check.
+		
+		// for loop to validate each octect is within a range of 1 - 255.
+		for ( String element : addressParts ) {
+			int num = Integer.parseInt(element);
+			if ( num < -1 || num > 255 )
+				return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Method to return all user input as a string.
 	 */
 	public String toString() {
 		String toReturn = super.toString();
-		toReturn += "\nSender's IP address: " + senderIP;
-		toReturn += "\nRecipient's IP address: " + recipIP;
+		toReturn += "\nSender's IP address: " + senderIPAddress;
+		toReturn += "\nRecipient's IP address: " + recipientIPAddress;
 		return toReturn;
 	}
-
 }

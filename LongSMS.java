@@ -1,65 +1,79 @@
-package assignment2;
+package assignment4;
 
-import java.util.ArrayList;
-
-
+/**
+ * 
+ * @author Faiyaz Mirza
+ * @author Eric Brown
+ * @since 2020-11-05
+ * This class contains declared variables & Setter/Getter for class LongSMS with business rules.
+ */
 public class LongSMS extends SMS {
-	
-	/**
-	 * Static polymorphism with default constructor that sets String to default value.
-	 */
-	public LongSMS() { 
-		this(LongSMS.DEFAULT_LONG_SMS);
+	public LongSMS() {
+		this(Message.NOT_AVAILABLE, Message.NOT_AVAILABLE, LongSMS.EMPTY_MESSAGE, Message.NOT_AVAILABLE,
+				Message.NOT_AVAILABLE, SMS.DEFAULT_PHONE_NUMBER, SMS.DEFAULT_PHONE_NUMBER);
 	}
 	
-	/**
-	 * Constructor with string argument
-	 * @param multiPartContent
-	 */
-	public LongSMS(String multiPartContent) {
-		setMultiPartContent(multiPartContent);
-	}
-	/**
-	 * Constant to represent unknown values for null or invalid input
-	 */
-	private static final String DEFAULT_LONG_SMS = "---";
-
-	
-	private String multiPartContent;
-
-	/**
-	 * A method that returns the Multi-part LongSMS content 
-	 * @return A String containing the multi-part content of LongSMS message. Returns "---" if input is invalid
-	 * according to business rules.
-	 */
-	public String getMultiPartContent() {
-		return multiPartContent;
+	public LongSMS(String sender, String recipient, String content, String date, String time, String senderPhoneNumber,
+			String recipientPhoneNumber) {
+		super(sender, recipient, content, date, time, senderPhoneNumber, recipientPhoneNumber);
+		// Keep in mind that the SMS class calls setContent(content). Since we are overriding the behavior of that
+		// function from the SMS class in the LongSMS class, we will get the local behavior instead.
 	}
 
 	/**
-	 * A polymorphic method that set the value of the variable 'multiPartContent' and splits the message into 160 characters, then stores into an array.
+	 * Default constructor that sets String to default value: '---'.
+	 */
+	public static final String EMPTY_MESSAGE = "---";
+	
+	/**
+	 * Method to create multipartContent array.
+	 */
+	private String[] multipartContent;
+	
+	/**
+	 * Method that set the value of the variable 'multiPartContent' and splits the message into 160 characters.
 	 * 
-	 * @param multiPartContent A string with user's LongSMS message input; checks if input is null, removes leading and trailing whitespace,
-	 * stores string into an array of strings with each string containing no more than 160 characters.
+	 * @param content A String with user's message content input; checks if input is null, removes leading and trailing whitespace,
+	 * stores string into an array multipartContent with each string containing no more than 160 characters.
 	 * @return A Boolean value that reports whether the attribute was set (true) or not (false)
 	 */
-	public void setMultiPartContent(String content) {
-		
-		// Checking if the string is null
-		if ( multiPartContent == null )
+	public void setContent(String content) {
+		if ( content == null ) // check if string is null
 			return;
 		
-		// Removing leading and trailing whitespace
-		multiPartContent = multiPartContent.trim();
+		content = content.trim(); // trim whitespace
 		
-		// Store multiPartContent into an array and split string every 160 characters
-		ArrayList<String> strings = new ArrayList<String>();
-		int index = 0;
-		while (index < multiPartContent.length()) {
-		    strings.add(multiPartContent.substring(index, Math.min(index + 160,multiPartContent.length())));
-		    index += 160;
-		}   
-		this.multiPartContent = content;
-	}  
+		if ( content.equalsIgnoreCase(LongSMS.EMPTY_MESSAGE) ) {
+			this.setContent(LongSMS.EMPTY_MESSAGE);
+			this.multipartContent = (new String[] {LongSMS.EMPTY_MESSAGE});
+			return;
+		}
+		
+		this.multipartContent = (content.split("(?<=\\G.{160})")); // Splits LongSMS content into 160 character groupings.
+	}
 	
+	/**
+	 * Getter that stores content in multipartContent array.
+	 */
+	public String getContent() {
+		String toReturn = "";
+		
+		// for loop to store content into multipartContent array.
+		for ( int i = 0; i < multipartContent.length; i++ ) {
+			toReturn += multipartContent[i];
+		}
+		
+		return toReturn;
+	}
+	
+	/**
+	 * Method to return all user LongSMS content input as string.
+	 */
+	public String toString() {
+		String toReturn = super.toString();
+		for ( int i = 0; i < multipartContent.length; i++ ) {
+			toReturn += "\nMultipart Content, Part " + i + ": " + multipartContent[i];
+		}
+		return toReturn;
+	}
 }

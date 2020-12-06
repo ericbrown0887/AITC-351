@@ -1,85 +1,97 @@
-package assignment2;
+package assignment4;
 
+/**
+ * 
+ * @author Faiyaz Mirza
+ * @author Eric Brown
+ * @since 2020-11-05
+ * This class contains declared variables & Setter/Getter for class Email with business rules.
+ */
 public class Email extends Message {
+	
 	/**
-	 * Static polymorphism with default constructor that sets all the Strings to default values.
+	 * Default constructor Email() that sets all Strings to default values.
 	 */
 	public Email() {
-		this(Email.DEFAULT_SENDER_EMAIL, Email.DEFAULT_RECIP_EMAIL);
-	
+		this(Message.NOT_AVAILABLE, Message.NOT_AVAILABLE, Message.NOT_AVAILABLE, Message.NOT_AVAILABLE,
+				Message.NOT_AVAILABLE, Email.DEFAULT_EMAIL_ADDRESS, Email.DEFAULT_EMAIL_ADDRESS);
 	}
 	
-	/**
-	 * Constructor with all string arguemnts
-	 * @param senderEmail
-	 * @param recipEmail
-	 */
-	public Email(String senderEmail, String recipEmail)  {
-		setSenderEmail(senderEmail);
-		setRecipEmail(recipEmail);
+	public Email(String sender, String recipient, String content, String date, String time, String senderEmailAddress,
+			String recipientEmailAddress) {
+		super(sender, recipient, content, date, time);
+		setSenderEmailAddress(senderEmailAddress);
+		setRecipientEmailAddress(recipientEmailAddress);
 	}
-	/**
-	 * Constants to represent unknown values for null or invalid inputs
-	 */
-	private static final String DEFAULT_SENDER_EMAIL = "---";
-	private static final String DEFAULT_RECIP_EMAIL = "---";
 
-	public String senderEmail;
-	public String recipEmail;
+	/**
+	 * Constant to represent unknown value for null or invalid inputs.
+	 */
+	public static final String DEFAULT_EMAIL_ADDRESS = "nobody@nowhere.not";
+	
+	private String senderEmailAddress;
+	private String recipientEmailAddress;
 	
 	/**
-	 * A method that returns the Sender email
-	 * @return A String containing the email of the Sender. Returns "---" if input is invalid
-	 * according to business rules.
+	 * Getter for the sender email attribute. If the value has not been set, the returned string will contain {@value #DEFAULT_EMAIL_ADDRESS}.
+	 * @return A String with the sender email address.
 	 */
-	public String getSenderEmail() {
-		return senderEmail;
+	public String getSenderEmailAddress() {
+		return senderEmailAddress;
 	}
+	
 	/**
-	 * A method that set the value of the variable 'senderEmail' and checks for business rules.
-	 * 
-	 * @param senderEmail A string with user's sender input; checks if input is null and RegEx checking for acceptable email address input.
-	 * @return A Boolean value that reports whether the attribute was set (true) or not (false)
+	 * Setter for the sender email attribute. Check for null input, remove trailing whitespace, and validate proper email format using regex.
+	 * @param senderEmailAddress A String with sender's email input
+	 * @return a Boolean value that reports whether the attribute was set (true) or not (false)
 	 */
-	public void setSenderEmail(String senderEmail) {
-		
-		// Checking if the string is null
-		if ( senderEmail == null )
+	public void setSenderEmailAddress(String senderEmailAddress) {
+		if ( senderEmailAddress == null || senderEmailAddress.trim().length() == 0 ) // Check if String is null, trim whitespace
 			return;
 		
-		// RegEx check that the input matches a valid email address
-		if ( !senderEmail.matches("^(.+)@(.+)$"))
-				return;
+		if ( senderEmailAddress.trim().equalsIgnoreCase(DEFAULT_EMAIL_ADDRESS) ) {
+			this.senderEmailAddress = DEFAULT_EMAIL_ADDRESS;
+			return;
+		}
 		
-		this.senderEmail = senderEmail;
-	}
-	
-	/**
-	 * A method that returns the Recipient email
-	 * @return A String containing the email of the Sender. Returns "---" if input is invalid
-	 * according to business rules.
-	 */
-	public String getRecipEmail() {
-		return recipEmail;
-	}
-	
-	/**
-	 * A method that set the value of the variable 'recipEmail' and checks for business rules.
-	 * 
-	 * @param recipEmail A string with user's recipient input; checks if input is null and RegEx checking for acceptable email address input.
-	 * @return A Boolean value that reports whether the attribute was set (true) or not (false)
-	 */
-	public void setRecipEmail(String recipEmail) {
+		// Source: https://emailregex.com/
+		String emailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
 		
-		// Checking if the string is null
-		if ( recipEmail == null )
+		if ( !senderEmailAddress.matches(emailRegex) ) // Validate email address
 			return;
 		
-		// RegEx check that the input matches a valid email address
-		if ( !recipEmail.matches("^(.+)@(.+)$"))
-				return;
+		this.senderEmailAddress = senderEmailAddress;
+	}
+	
+	/**
+	 * Getter for the recipient email attribute. If the value has not been set, the returned string will contain {@value #DEFAULT_EMAIL_ADDRESS}.
+	 * @return A String with the recipient email address.
+	 */
+	public String getRecipientEmailAddress() {
+		return recipientEmailAddress;
+	}
+	
+	/**
+	 * Setter for the recipient email attribute. Check for null input, remove trailing whitespace, and validate proper email format using regex.
+	 * @param recipientEmailAddress A String with recipient email input
+	 * @return a Boolean value that reports whether the attribute was set (true) or not (false)
+	 */ 
+	public void setRecipientEmailAddress(String recipientEmailAddress) {
+		if ( recipientEmailAddress == null || recipientEmailAddress.trim().length() == 0 ) // Check if String is null, trim whitespace
+			return;
 		
-		this.recipEmail = recipEmail;
+		if ( recipientEmailAddress.trim().equalsIgnoreCase(DEFAULT_EMAIL_ADDRESS) ) {
+			this.recipientEmailAddress = DEFAULT_EMAIL_ADDRESS;
+			return;
+		}
+		
+		// Source: https://emailregex.com/
+		String emailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
+		
+		if ( !recipientEmailAddress.matches(emailRegex) ) // Validate email address
+			return;
+		
+		this.recipientEmailAddress = recipientEmailAddress;
 	}
 	
 	/**
@@ -87,10 +99,8 @@ public class Email extends Message {
 	 */
 	public String toString() {
 		String toReturn = super.toString();
-		toReturn += "\nSender's email address: " + senderEmail;
-		toReturn += "\nRecipient's email address: " + recipEmail;
+		toReturn += "\nSender's email address: " + senderEmailAddress;
+		toReturn += "\nRecipient's email address: " + recipientEmailAddress;
 		return toReturn;
 	}
-	
-
 }
